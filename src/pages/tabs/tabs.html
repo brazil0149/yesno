@@ -1,0 +1,4 @@
+<ion-tabs #myappTabs [selectedIndex]="0" (click)="clicked()">
+  <ion-tab tabIcon="home" #content tabTitle="Posts" [root]="homePage" tabBadge="{{newThreads}}" tabBadgeStyle="danger"></ion-tab>
+  <ion-tab tabIcon="person" #content tabTitle="Profile" [root]="profilePage"></ion-tab>
+</ion-tabs>

@@ -1,0 +1,61 @@
+<ion-item text-wrap>
+    <ion-card>
+
+        <ion-item>
+            <ion-avatar item-left>
+                <forum-user-avatar [user]="thread.user"></forum-user-avatar>
+            </ion-avatar>
+            <h2>{{thread.user.username}}</h2>
+            <p>{{thread.dateCreated | date:'medium'}}</p>
+            <button ion-button icon-right clear small item-right color="light" (click)="removeItem(post)">
+            <ion-icon name="close"></ion-icon>
+            </button>
+        </ion-item>
+
+        <!--<img src="img/advance-card-bttf.png">-->
+        <ion-card-content>
+            <ion-card-title>
+              {{thread?.title}}
+            </ion-card-title>
+            <p>{{thread?.question}}</p>
+        </ion-card-content>
+
+        <!--
+        <ion-row class="left-border">
+          <ion-col>
+              <button ion-button danger clear small (click)="viewComments(thread.key)">
+                <ion-note>
+                    {{thread.category}}
+                </ion-note>
+              </button>
+          </ion-col>
+        </ion-row> -->
+        <ion-row>
+            <ion-item>
+              <button ion-button icon-left clear large item-left (click)="vote(true,thread)" color="secondary">
+              <ion-icon name="thumbs-up" large></ion-icon>
+              <div> {{thread.votesUp}}</div>
+              </button>
+              <button ion-button icon-left clear large item-right (click)="vote(false,thread)" color="danger">
+              <ion-icon name="thumbs-down" large></ion-icon>
+              <div> {{thread.votesDown}}</div>
+              </button>
+            </ion-item>
+        </ion-row>
+
+        <ion-row>
+            <ion-item>
+                <button ion-button danger icon-left clear small item-right (click)="viewComments(thread.key)">
+                  <ion-icon name="chatbubbles"></ion-icon>
+                  <ion-badge> {{thread.comments}} Comments</ion-badge>
+                </button>
+                <button ion-button icon-left clear small item-right (click)="addThreadToFavorites()" color="danger">
+                  <ion-icon name="heart"></ion-icon>
+                </button>
+                <button ion-button icon-left clear small item-right (click)="sharePost()" color="dark">
+                  <ion-icon name="share"></ion-icon>
+                </button>
+            </ion-item>
+        </ion-row>
+    </ion-card>
+</ion-item>

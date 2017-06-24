@@ -1,0 +1,133 @@
+
+<ion-header>
+    <ion-navbar color="dark">
+        <ion-title>
+          Granite
+        </ion-title>
+        <ion-toolbar no-border-top>
+          <ion-searchbar primary [(ngModel)]="queryText" (ionInput)="searchThreads()" placeholder="Search">
+          </ion-searchbar>
+        </ion-toolbar>
+    </ion-navbar>
+
+    <shrinking-segment-header [scrollArea]="myContent" headerHeight="100" *ngIf="userDataLoaded">
+        <forum-user-avatar [user]="user" *ngIf="userDataLoaded" (click)="pushPage()"></forum-user-avatar>
+        <h2 (click)="pushPage()">{{userProfile.username}}</h2>
+    </shrinking-segment-header>
+
+    <ion-toolbar color="light" mode="md">
+      <ion-segment color="dark" [(ngModel)]="segment" mode="md" (ionChange)="filterThreads(segment)">
+        <ion-segment-button value="all">
+          <ion-icon name="home"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="favorites">
+          <ion-icon name="heart"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="three" >
+          <ion-icon name="person"></ion-icon>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+
+</ion-header>
+
+
+  <ion-fab right bottom *ngIf="buttonClicked" [hidden]="three">
+    <button ion-fab *ngIf="!internetConnected" (click)="notify('Working offline..')">
+      <ion-icon name="warning"></ion-icon>
+    </button>
+    <button ion-fab (click)="createThread()" *ngIf="internetConnected" color="primary">
+    <ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+
+
+  <ion-content fullscreen #myContent style="margin-top:90px">
+
+    <ion-refresher (ionRefresh)="reloadThreads($event)" *ngIf="segment=='all'">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <div *ngIf="loading">
+      <img src="assets/images/ring.gif" style="display:block; margin:auto" />
+    </div>
+
+    <ion-list *ngIf="!loading">
+      <forum-thread *ngFor="let thread of threads" [thread]="thread" (onViewComments)="viewComments($event)"></forum-thread>
+    </ion-list>
+
+    <ion-infinite-scroll (ionInfinite)="fetchNextThreads($event)" threshold="10px" *ngIf="(start > 0) && (queryText.trim().length == 0) && segment=='all' && internetConnected">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-content>
+
+<!--  Display user profile -->
+<template [ngIf]="segment === 'three'">
+    <ion-content fullscreen #myContent style="margin-top:260px">
+        <div *ngIf="!userDataLoaded">
+            <img src="assets/images/ring.gif" style="display:block; margin:auto" />
+        </div>
+
+        <ion-list no-border *ngIf="userDataLoaded">
+          <!--
+            <ion-item>
+                <ion-thumbnail item-left>
+                    <!--<img src="{{userProfile.image}}">
+                    <forum-user-avatar [user]="user" *ngIf="userDataLoaded"></forum-user-avatar>
+                </ion-thumbnail>
+                <h2>{{userProfile.username}}</h2>
+                <p>{{firebaseAccount.email}}</p>
+            </ion-item> -->
+
+            <ion-item>
+                <ion-icon name='contact' item-left></ion-icon>
+                Email
+                <ion-note item-right>
+                    {{firebaseAccount.email}}
+                </ion-note>
+            </ion-item>
+
+            <ion-item>
+                <ion-icon name='calendar' item-left></ion-icon>
+                Date of Birth
+                <ion-note item-right>
+                    {{userProfile.dateOfBirth}}
+                </ion-note>
+            </ion-item>
+
+            <!--
+            <ion-item>
+                <ion-icon name='cloud-upload' item-left></ion-icon>
+                <ion-note item-right>
+                    {{firebaseAccount.U}}
+                </ion-note>
+            </ion-item> -->
+
+        </ion-list>
+
+
+        <ion-list *ngIf="userDataLoaded">
+
+            <ion-list-header>
+                Activity
+            </ion-list-header>
+
+            <ion-item>
+                 Posts
+                <ion-icon name='text' item-left></ion-icon>
+                <ion-badge item-right>{{userStatistics.totalThreads}}</ion-badge>
+            </ion-item>
+
+            <ion-item>
+                 Comments
+                <ion-icon name='quote' item-left></ion-icon>
+                <ion-badge item-right>{{userStatistics.totalComments}}</ion-badge>
+            </ion-item>
+            <ion-item>
+                 Favorites
+                <ion-icon name='heart' item-left></ion-icon>
+                <ion-badge item-right>{{userProfile.totalFavorites}}</ion-badge>
+            </ion-item>
+
+        </ion-list>
+    </ion-content>
+ </template>
